@@ -2,31 +2,71 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>Opening Research Note...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obsidian Launcher</title>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f5; /* 눈이 편안한 회색 */
+        color: #333;
+    }
+    .card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h2 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
+    p { color: #666; margin-bottom: 1.5rem; line-height: 1.5; }
+    button {
+        background-color: #7e22ce; /* 옵시디언 보라색 */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    button:hover { background-color: #6b21a8; }
+</style>
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const targetUrl = params.get('url');
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        const targetUrl = params.get('url');
 
-    if (targetUrl) {
-        // 1. 옵시디언 실행
-        window.location.href = targetUrl;
-
-        // 2. 브라우저 닫기 시도 (핵심 추가된 부분)
-        setTimeout(() => {
-            // 일반적인 닫기 시도
-            window.close();
+        if (targetUrl) {
+            // 0.5초 뒤에 실행 (화면이 먼저 뜨도록 유도)
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 500);
             
-            // 엣지/크롬을 속여서 닫기 시도 (Hack)
-            window.open('','_self').close(); 
-        }, 500); // 0.5초 딜레이
+            // 자동 닫기 시도 (브라우저가 허용하면 닫힘)
+            setTimeout(() => {
+                window.close();
+            }, 1500);
+        } else {
+            document.getElementById("status").innerText = "연결된 주소가 없습니다.";
+        }
     }
 </script>
-<style>
-    body { font-family: sans-serif; text-align: center; margin-top: 20%; color: #555; }
-</style>
 </head>
 <body>
-    <h3>🚀 연구노트를 실행했습니다.</h3>
-    <p>이 창이 자동으로 닫히지 않으면 수동으로 닫아주세요.</p>
+    <div class="card">
+        <div class="icon">💎</div>
+        <h2 id="status">옵시디언 실행 중...</h2>
+        <p>연구노트를 성공적으로 열었습니다.<br>이 창을 닫으셔도 됩니다.</p>
+        <button onclick="window.close()">창 닫기</button>
+    </div>
 </body>
 </html>
