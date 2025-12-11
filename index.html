@@ -13,7 +13,7 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
-        background-color: #f4f4f5; /* 눈이 편안한 회색 */
+        background-color: #f4f4f5;
         color: #333;
     }
     .card {
@@ -28,17 +28,30 @@
     .icon { font-size: 3rem; margin-bottom: 1rem; }
     h2 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
     p { color: #666; margin-bottom: 1.5rem; line-height: 1.5; }
-    button {
-        background-color: #7e22ce; /* 옵시디언 보라색 */
+    
+    /* 중요: 즉시 실행 버튼 스타일 */
+    .btn-launch {
+        background-color: #7e22ce;
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-size: 1rem;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
         cursor: pointer;
-        transition: background 0.2s;
+        width: 100%;
+        margin-bottom: 10px;
+        transition: transform 0.1s;
     }
-    button:hover { background-color: #6b21a8; }
+    .btn-launch:active { transform: scale(0.98); }
+    .btn-close {
+        background: none;
+        border: none;
+        color: #999;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: underline;
+    }
 </style>
 <script>
     window.onload = function() {
@@ -46,17 +59,23 @@
         const targetUrl = params.get('url');
 
         if (targetUrl) {
-            // 0.1초 뒤에 실행 (화면이 먼저 뜨도록 유도)
+            // 버튼에 링크 심기 (차단되면 이걸 누르세요)
+            document.getElementById("manualBtn").onclick = function() {
+                window.location.href = targetUrl;
+            };
+
+            // 1. 자동 실행 시도 (0.1초 뒤)
             setTimeout(() => {
                 window.location.href = targetUrl;
             }, 100);
             
-            // 자동 닫기 시도 (브라우저가 허용하면 닫힘)
+            // 2. 자동 닫기 (5초 뒤) 
+            // *중요: 브라우저가 차단했을 때 버튼 누를 시간을 줍니다.
             setTimeout(() => {
                 window.close();
-            }, 1500);
+            }, 5000);
         } else {
-            document.getElementById("status").innerText = "연결된 주소가 없습니다.";
+            document.getElementById("status").innerText = "주소가 없습니다.";
         }
     }
 </script>
@@ -64,9 +83,12 @@
 <body>
     <div class="card">
         <div class="icon">💎</div>
-        <h2 id="status">옵시디언 실행 중...</h2>
-        <p>연구노트를 성공적으로 열었습니다.<br>이 창을 닫으셔도 됩니다.</p>
-        <button onclick="window.close()">창 닫기</button>
+        <h2 id="status">옵시디언 연결 중...</h2>
+        <p>자동으로 열리지 않으면<br>아래 버튼을 눌러주세요.</p>
+        
+        <button id="manualBtn" class="btn-launch">🚀 지금 열기</button>
+        
+        <button class="btn-close" onclick="window.close()">창 닫기</button>
     </div>
 </body>
 </html>
