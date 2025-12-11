@@ -2,21 +2,31 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>Obsidian Bridge</title>
+<title>Opening Research Note...</title>
 <script>
-    // 1. 주소 뒤에 붙은 url= 값을 가져온다.
     const params = new URLSearchParams(window.location.search);
     const targetUrl = params.get('url');
 
-    // 2. 옵시디언 주소가 맞으면 바로 실행시킨다.
     if (targetUrl) {
+        // 1. 옵시디언 실행
         window.location.href = targetUrl;
-    } else {
-        document.body.innerHTML = "<h3>연결된 주소가 없습니다.</h3>";
+
+        // 2. 브라우저 닫기 시도 (핵심 추가된 부분)
+        setTimeout(() => {
+            // 일반적인 닫기 시도
+            window.close();
+            
+            // 엣지/크롬을 속여서 닫기 시도 (Hack)
+            window.open('','_self').close(); 
+        }, 500); // 0.5초 딜레이
     }
 </script>
+<style>
+    body { font-family: sans-serif; text-align: center; margin-top: 20%; color: #555; }
+</style>
 </head>
 <body>
-    <p>연구노트로 이동 중... 🚀</p>
+    <h3>🚀 연구노트를 실행했습니다.</h3>
+    <p>이 창이 자동으로 닫히지 않으면 수동으로 닫아주세요.</p>
 </body>
 </html>
