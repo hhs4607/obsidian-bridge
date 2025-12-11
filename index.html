@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obsidian Launcher</title>
+<title>Research Note Bridge</title>
 <style>
     body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -13,82 +13,123 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
-        background-color: #f4f4f5;
+        background-color: #f0f2f5;
         color: #333;
     }
-    .card {
+    .container {
         background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         text-align: center;
-        max-width: 400px;
-        width: 90%;
+        max-width: 420px;
+        width: 85%;
     }
-    .icon { font-size: 3rem; margin-bottom: 1rem; }
-    h2 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
-    p { color: #666; margin-bottom: 1.5rem; line-height: 1.5; }
+    .title {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    .file-name {
+        font-weight: 700;
+        color: #111;
+        background-color: #f3f4f6;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
     
-    /* 중요: 즉시 실행 버튼 스타일 */
-    .btn-launch {
-        background-color: #7e22ce;
+    /* 핵심: 거대한 실행 버튼 */
+    .btn-main {
+        display: block;
+        width: 100%;
+        background-color: #7e22ce; /* Obsidian Purple */
         color: white;
         border: none;
-        padding: 15px 30px;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: bold;
+        padding: 20px 0;
+        border-radius: 12px;
+        font-size: 1.3rem;
+        font-weight: 800;
         cursor: pointer;
-        width: 100%;
-        margin-bottom: 10px;
-        transition: transform 0.1s;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px rgba(126, 34, 206, 0.3);
+        margin-bottom: 15px;
+        text-decoration: none;
     }
-    .btn-launch:active { transform: scale(0.98); }
-    .btn-close {
-        background: none;
-        border: none;
-        color: #999;
-        font-size: 0.9rem;
-        cursor: pointer;
-        text-decoration: underline;
+    .btn-main:hover {
+        background-color: #6b21a8;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(126, 34, 206, 0.4);
+    }
+    .btn-main:active {
+        transform: translateY(1px);
+    }
+    
+    .footer {
+        font-size: 0.85rem;
+        color: #9ca3af;
+        margin-top: 20px;
     }
 </style>
-<script>
-    window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
-        const targetUrl = params.get('url');
-
-        if (targetUrl) {
-            // 버튼에 링크 심기 (차단되면 이걸 누르세요)
-            document.getElementById("manualBtn").onclick = function() {
-                window.location.href = targetUrl;
-            };
-
-            // 1. 자동 실행 시도 (0.1초 뒤)
-            setTimeout(() => {
-                window.location.href = targetUrl;
-            }, 100);
-            
-            // 2. 자동 닫기 (5초 뒤) 
-            // *중요: 브라우저가 차단했을 때 버튼 누를 시간을 줍니다.
-            setTimeout(() => {
-                window.close();
-            }, 5000);
-        } else {
-            document.getElementById("status").innerText = "주소가 없습니다.";
-        }
-    }
-</script>
 </head>
 <body>
-    <div class="card">
-        <div class="icon">💎</div>
-        <h2 id="status">옵시디언 연결 중...</h2>
-        <p>자동으로 열리지 않으면<br>아래 버튼을 눌러주세요.</p>
-        
-        <button id="manualBtn" class="btn-launch">🚀 지금 열기</button>
-        
-        <button class="btn-close" onclick="window.close()">창 닫기</button>
+    <div class="container">
+        <div class="title">
+            <span id="fileNameDisplay" class="file-name">Note</span> 연결 준비 완료
+        </div>
+
+        <a id="launchBtn" href="#" class="btn-main">
+            🚀 노트 열기 / 생성
+        </a>
+
+        <div class="footer">
+            버튼을 누르면 즉시 실행됩니다.<br>
+            (Ctrl + W 로 닫기)
+        </div>
     </div>
+
+    <script>
+        // 1. URL에서 정보 추출
+        const params = new URLSearchParams(window.location.search);
+        const targetUrl = params.get('url');
+        
+        // 파일명 추출 (UI 표시용) - URL에서 'filepath' 또는 'name' 파라미터를 찾아서 보여줌
+        let displayTitle = "연구노트";
+        try {
+            if(targetUrl) {
+                const urlObj = new URL(targetUrl.replace("obsidian://", "http://")); // 파싱용 가짜 프로토콜
+                const filepath = urlObj.searchParams.get("filepath");
+                const name = urlObj.searchParams.get("name");
+                
+                if (filepath) {
+                    // 경로에서 파일명만 남기기 (예: 10_Projects/청소 -> 청소)
+                    displayTitle = decodeURIComponent(filepath.split('/').pop());
+                } else if (name) {
+                    displayTitle = decodeURIComponent(name);
+                }
+            }
+        } catch(e) { console.log("Parsing error"); }
+
+        // 2. 화면 업데이트
+        document.getElementById("fileNameDisplay").innerText = displayTitle;
+
+        // 3. 버튼에 기능 주입
+        const btn = document.getElementById("launchBtn");
+        if (targetUrl) {
+            btn.onclick = function() {
+                window.location.href = targetUrl;
+                
+                // 클릭 후 시각적 피드백 (선택사항)
+                btn.innerText = "⏳ 실행 중...";
+                btn.style.backgroundColor = "#4b5563";
+                
+                // 3초 뒤 자동 닫기 (사용자가 원하면)
+                setTimeout(() => { window.close(); }, 3000);
+            };
+        } else {
+            btn.innerText = "❌ 주소 오류";
+            btn.style.backgroundColor = "#ef4444";
+            btn.style.cursor = "not-allowed";
+        }
+    </script>
 </body>
 </html>
