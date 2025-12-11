@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Obsidian Bridge</title>
+<script>
+    // 1. 주소 뒤에 붙은 url= 값을 가져온다.
+    const params = new URLSearchParams(window.location.search);
+    const targetUrl = params.get('url');
+
+    // 2. 옵시디언 주소가 맞으면 바로 실행시킨다.
+    if (targetUrl) {
+        window.location.href = targetUrl;
+    } else {
+        document.body.innerHTML = "<h3>연결된 주소가 없습니다.</h3>";
+    }
+</script>
+</head>
+<body>
+    <p>연구노트로 이동 중... 🚀</p>
+</body>
+</html>
