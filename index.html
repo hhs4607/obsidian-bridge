@@ -46,10 +46,10 @@
         const targetUrl = params.get('url');
 
         if (targetUrl) {
-            // 0.5초 뒤에 실행 (화면이 먼저 뜨도록 유도)
+            // 0.1초 뒤에 실행 (화면이 먼저 뜨도록 유도)
             setTimeout(() => {
                 window.location.href = targetUrl;
-            }, 500);
+            }, 100);
             
             // 자동 닫기 시도 (브라우저가 허용하면 닫힘)
             setTimeout(() => {
